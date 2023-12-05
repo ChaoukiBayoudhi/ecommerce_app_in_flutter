@@ -9,9 +9,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:ecommerce_app/models/product.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'package:ecommerce_app/models/product.dart';
 
 class DatabaseHelper {
   //create a private constructor
@@ -72,6 +74,15 @@ class DatabaseHelper {
     _database = await _initDatabase();
     return _database!;
   }
+  Future<bool> requestStoragePermission() async {
+  final status = await Permission.storage.request();
+  if (status.isGranted) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
   //initialize the database
   _initDatabase() async {
@@ -79,8 +90,13 @@ class DatabaseHelper {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + _dbName;
     //open/create the database at a given path
+    final granted = await requestStoragePermission();
+  if (granted) {
     return await openDatabase(path,
         version: _dbVersion, onCreate: _createDatabase);
+  } else {
+    return null;
+  }
   }
 
   //create the database tables
@@ -175,7 +191,8 @@ Future<int> updateProduct(Product product) async {
 Future<int> deleteProduct(int id) async {
   Database db = await database;
   return await db
-      .delete(_productTable, where: '$_columnProductId = ?', whereArgs: [id]);
+      .delete(_productTable,
+      where: '$_columnProductId = ?', whereArgs: [id]);
 }
 
 //Delete operation: Delete all products from database

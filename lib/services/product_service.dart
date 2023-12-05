@@ -4,7 +4,10 @@ import 'package:ecommerce_app/database/database_helper.dart';
 import 'package:ecommerce_app/models/product.dart';
 
 class ProductService{
+  //instantiation
   final _databaseHelper=DatabaseHelper.instance;
+  //or
+  //DatabaseHelper _databaseHelper=DatabaseHelper();
 
   //create a product
   Future<int> createProduct(Product product) async{

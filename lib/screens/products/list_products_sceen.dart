@@ -31,6 +31,12 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products List'),
+        actions: [
+    IconButton(
+      onPressed: () => Navigator.pushNamed(context, '/add-product'),
+      icon: const Icon(Icons.add),
+    ),
+  ],
       ),
       body: ListView.builder(
         itemCount: _products.length,
